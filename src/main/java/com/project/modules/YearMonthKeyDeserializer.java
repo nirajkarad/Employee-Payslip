@@ -27,15 +27,22 @@
  * under the License.
 
  */
-package com.project.persist;
+package com.project.modules;
 
-import com.project.organization.Organization;
+import org.joda.time.YearMonth;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import java.io.IOException;
+import com.fasterxml.jackson.databind.KeyDeserializer;
 
-public interface Storage
+public class YearMonthKeyDeserializer extends KeyDeserializer
 {
+    @Override
+    public Object deserializeKey(String key, DeserializationContext ctxt) throws IOException, JsonProcessingException
+    {
+        if (key.length() == 0) 
+            return null;
+        return new YearMonth(key);
+    }
 
-    void putDetail(int id , Organization o);
-    
-    Organization getDetail(int id);
-    
 }

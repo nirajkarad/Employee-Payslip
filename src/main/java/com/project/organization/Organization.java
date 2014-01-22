@@ -37,26 +37,23 @@ import com.project.employee.Employee;
 import java.util.Iterator;
 import java.util.Set;
 
-//@JsonDeserialize(using = OrgDeserializer.class)
 public class Organization
 {
 
     private int org_id;
- 
- 
+
     private String org_name;
-    
+
     private Set<Employee> emp_collection;
 
     @JsonCreator
-    public Organization(@JsonProperty("org_id") int id,@JsonProperty("org_name") String name)
+    public Organization(@JsonProperty("org_id") int id, @JsonProperty("org_name") String name)
     {
         this.org_id = id;
         this.org_name = name;
         this.emp_collection = Sets.newConcurrentHashSet();
     }
 
-    
     public String getOrg_name()
     {
         return org_name;
@@ -67,7 +64,6 @@ public class Organization
         return emp_collection;
     }
 
-    
     public int getOrg_id()
     {
         return org_id;

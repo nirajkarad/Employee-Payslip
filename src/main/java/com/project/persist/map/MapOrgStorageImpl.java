@@ -40,10 +40,9 @@ public class MapOrgStorageImpl implements Storage
 
     Map<Integer, Organization> map = new ConcurrentHashMap<Integer, Organization>();
 
-    public int putDetail(int id, Organization o)
+    public void putDetail(int id, Organization o)
     {
         map.put(id, o);
-        return map.size();
     }
 
     public Organization getDetail(int id)

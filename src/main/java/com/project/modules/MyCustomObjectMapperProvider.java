@@ -29,25 +29,19 @@
  */
 package com.project.modules;
 
-
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.google.inject.Provider;
+import org.joda.time.YearMonth;
 
 public class MyCustomObjectMapperProvider implements Provider<ObjectMapper>
 {
-    
+
     @Override
     public ObjectMapper get()
     {
-      /*  @SuppressWarnings("deprecation")
-        SimpleModule simpleModule = new SimpleModule("SimpleModule",new Version(1,0,0,null));
-        simpleModule.addSerializer(new YearMonthSerializer());*/
         ObjectMapper mapper = new ObjectMapper();
-        //mapper.registerModules(new JodaModule() , simpleModule);
-        mapper.registerModule(new JodaModule());
+        mapper.registerModules(new JodaModule().addKeyDeserializer(YearMonth.class, new YearMonthKeyDeserializer()));
         return mapper;
     }
-    
 }

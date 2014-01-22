@@ -64,6 +64,13 @@ public class Finance
         this.org_store = str;
     }
 
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public String employeeFinanace()
+    {
+        return "Test : Welcome to Employee Finance";
+    }
+
     private void checkAddOrgDetails(Organization org)
     {
         if (org.getOrg_id() <= 0)
@@ -78,6 +85,9 @@ public class Finance
     public Response addOrganization(Organization org)
     {
         checkAddOrgDetails(org);
+        if (org_store.getDetail(org.getOrg_id()) != null) {
+            throw new WebApplicationException(Response.status(Status.CONFLICT).entity("Organization already exists").build());
+        }
         org_store.putDetail(org.getOrg_id(), org);
         return Response.status(Status.CREATED).entity(org.getOrg_name() + " Organization created with id - " + org.getOrg_id()).build();
     }
@@ -104,13 +114,17 @@ public class Finance
         checkAddEmployeeDetails(org_id, emp);
 
         Organization org = org_store.getDetail(org_id);
+
         if (org != null) {
+            if (org.getEmp(emp.getEmp_id()) != null) {
+                throw new WebApplicationException(Response.status(Status.CONFLICT).entity("Employee already exists..").build());
+            }
             org.addEmployeeToOrganization(emp);
             org_store.putDetail(org_id, org);
             return Response.status(Status.CREATED).entity("Employee with Id " + emp.getEmp_id() + " created successfully.").build();
         }
         else
-            throw new WebApplicationException(Response.status(Status.CONFLICT).entity("Organization with id " + org_id + " not found.").build());
+            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Organization with id " + org_id + " not found.").build());
     }
 
     private void checkAddPaySlip(int org_id, int emp_id, Map<String, Integer> breakup, int year, int month)
@@ -162,13 +176,6 @@ public class Finance
         if (o != null)
             return o.getEmp_collection();
         return null;
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public String employeeFinanace()
-    {
-        return "Welcome to Employee Finance";
     }
 
     @GET

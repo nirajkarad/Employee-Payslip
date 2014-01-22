@@ -29,12 +29,13 @@
  */
 package com.project.employee;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import java.util.Map;
 import org.joda.time.YearMonth;
 
-//@JsonDeserialize(using = EmpDeserializer.class)
 public class Employee
 {
     private int emp_id;
@@ -44,9 +45,8 @@ public class Employee
 
     private Map<YearMonth, Map<String, Integer>> pay_slip;
 
-    //@JsonCreator
-    //public Employee(@JsonProperty("emp_id") int id, @JsonProperty("emp_fname") String fname, @JsonProperty("emp_lname") String lname, @JsonProperty("emp_email") String email)
-    public Employee( int id, String fname, String lname, String email)
+    @JsonCreator
+    public Employee(@JsonProperty("emp_id") int id, @JsonProperty("emp_fname") String fname, @JsonProperty("emp_lname") String lname, @JsonProperty("emp_email") String email)
     {
         this.emp_id = id;
         this.emp_fname = fname;
@@ -58,6 +58,11 @@ public class Employee
     public Map<YearMonth, Map<String, Integer>> getPay_slip()
     {
         return pay_slip;
+    }
+
+    public Map<String, Integer> getPayslipForSpecificMonth(int year, int month)
+    {
+        return pay_slip.get(new YearMonth(year, month));
     }
 
     public int getEmp_id()

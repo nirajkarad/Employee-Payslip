@@ -36,15 +36,9 @@ import com.project.persist.map.MapOrgStorageImpl;
 import com.project.resource.Finance;
 import com.sun.jersey.guice.JerseyServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MyModule extends JerseyServletModule
 {
-
-    private static final String JERSEY_API_JSON_POJO_MAPPING_FEATURE = "com.sun.jersey.api.json.POJOMappingFeature";
-    private static final String JERSEY_CONFIG_PROPERTY_PACKAGES = "com.sun.jersey.config.property.packages";
-    private static final String CUSTOMER_RESOURCES_PACKAGE = "com.project.resource";
 
     @Override
     protected void configureServlets()
@@ -53,18 +47,11 @@ public class MyModule extends JerseyServletModule
         bind(Storage.class).to(MapOrgStorageImpl.class).asEagerSingleton();
 
         // Configure Jackson for generating JSON
-
         bind(JacksonJsonProvider.class).toProvider(JacksonJsonProviderWrapper.class).asEagerSingleton();
 
         // Configures Jackson object mapper to convert JodaTime YearMonth.
-
         bind(ObjectMapper.class).toProvider(new MyCustomObjectMapperProvider()).asEagerSingleton();
 
-        final Map<String, String> params = new HashMap<String, String>();
-
-        params.put(JERSEY_CONFIG_PROPERTY_PACKAGES, CUSTOMER_RESOURCES_PACKAGE);
-        params.put(JERSEY_API_JSON_POJO_MAPPING_FEATURE, "true");
-
-        serve("/*").with(GuiceContainer.class, params);
+        serve("/*").with(GuiceContainer.class);
     }
 }
