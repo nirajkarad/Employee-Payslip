@@ -40,41 +40,41 @@ import java.util.Set;
 public class Organization
 {
 
-    private int org_id;
+    private int id;
 
-    private String org_name;
+    private String name;
 
-    private Set<Employee> emp_collection;
+    private Set<Employee> employeeList;
 
     @JsonCreator
-    public Organization(@JsonProperty("org_id") int id, @JsonProperty("org_name") String name)
+    public Organization(@JsonProperty("id") int id, @JsonProperty("name") String name)
     {
-        this.org_id = id;
-        this.org_name = name;
-        this.emp_collection = Sets.newConcurrentHashSet();
+        this.id = id;
+        this.name = name;
+        this.employeeList = Sets.newConcurrentHashSet();
     }
 
-    public String getOrg_name()
+    public String getName()
     {
-        return org_name;
+        return name;
     }
 
-    public Set<Employee> getEmp_collection()
+    public Set<Employee> getEmployeeList()
     {
-        return emp_collection;
+        return employeeList;
     }
 
-    public int getOrg_id()
+    public int getId()
     {
-        return org_id;
+        return id;
     }
 
-    public Employee getEmp(int empId)
+    public Employee getEmployee(int empId)
     {
-        Iterator<Employee> itr = emp_collection.iterator();
+        Iterator<Employee> itr = employeeList.iterator();
         while (itr.hasNext()) {
             Employee emp = itr.next();
-            if (emp.getEmp_id() == empId)
+            if (emp.getId() == empId)
                 return emp;
         }
         return null;
@@ -82,6 +82,6 @@ public class Organization
 
     public void addEmployeeToOrganization(Employee emp)
     {
-        emp_collection.add(emp);
+        employeeList.add(emp);
     }
 }

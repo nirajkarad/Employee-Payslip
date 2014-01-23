@@ -59,18 +59,18 @@ public class TestOrganization
     @Test(dependsOnMethods="testAddEmployeeToOrganization")
     public void testgetEmpId()
     {
-        Employee e = org.getEmp(1);
+        Employee e = org.getEmployee(1);
         Assert.assertNotNull(e);
-        Assert.assertEquals(1, emp.getEmp_id());
-        Assert.assertEquals("fname", emp.getEmp_fname());
-        Assert.assertEquals("lname", emp.getEmp_lname());
-        Assert.assertEquals("email", emp.getEmp_email());
+        Assert.assertEquals(1, emp.getId());
+        Assert.assertEquals("fname", emp.getFirstName());
+        Assert.assertEquals("lname", emp.getLastName());
+        Assert.assertEquals("email", emp.getEmail());
     }
     
     @Test(dependsOnMethods="testAddEmployeeToOrganization")
     public void testgetAbsentEmpId()
     {
-        Employee e = org.getEmp(3);
+        Employee e = org.getEmployee(3);
         Assert.assertNull(e);
     }
     
@@ -84,7 +84,7 @@ public class TestOrganization
         org.addEmployeeToOrganization(emp2);
         org.addEmployeeToOrganization(emp3);
         
-        Assert.assertEquals( org.getEmp_collection().size(), 2);
+        Assert.assertEquals( org.getEmployeeList().size(), 2);
     }
     
 }

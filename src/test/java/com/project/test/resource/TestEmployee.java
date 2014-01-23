@@ -57,7 +57,7 @@ public class TestEmployee
     }
     
     @Test(dependsOnMethods="TestaddBreakupYearMonth")
-    public void TestGetPay_slip()
+    public void TestGetPaySlip()
     {
         Map<String, Integer> sal =emp.getPayslipForSpecificMonth(2014, 1);
         Assert.assertNotNull(sal);

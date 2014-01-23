@@ -40,67 +40,67 @@ import org.joda.time.YearMonth;
 
 public class Employee
 {
-    private int emp_id;
-    private String emp_fname;
-    private String emp_lname;
-    private String emp_email;
+    private int id;
+    private String firstName;
+    private String lastName;
+    private String email;
 
-    private Map<YearMonth, Map<String, Integer>> pay_slip;
+    private Map<YearMonth, Map<String, Integer>> paySlip;
     
     private Table<YearMonth, String, Integer> table;
 
     @JsonCreator
-    public Employee(@JsonProperty("emp_id") int id, @JsonProperty("emp_fname") String fname, @JsonProperty("emp_lname") String lname, @JsonProperty("emp_email") String email)
+    public Employee(@JsonProperty("id") int id, @JsonProperty("firstName") String firstName, @JsonProperty("lastName") String lastName, @JsonProperty("email") String email)
     {
-        this.emp_id = id;
-        this.emp_fname = fname;
-        this.emp_lname = lname;
-        this.emp_email = email;
-        this.pay_slip = Maps.newConcurrentMap();
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.paySlip = Maps.newConcurrentMap();
         this.table = HashBasedTable.create();
     }
 
     public Map<YearMonth, Map<String, Integer>> getPay_slip()
     {
-        return pay_slip;
+        return paySlip;
     }
 
     public Map<String, Integer> getPayslipForSpecificMonth(int year, int month)
     {
-        return pay_slip.get(new YearMonth(year, month));
+        return paySlip.get(new YearMonth(year, month));
     }
 
-    public int getEmp_id()
+    public int getId()
     {
-        return emp_id;
+        return id;
     }
 
-    public String getEmp_fname()
+    public String getFirstName()
     {
-        return emp_fname;
+        return firstName;
     }
 
-    public String getEmp_lname()
+    public String getLastName()
     {
-        return emp_lname;
+        return lastName;
     }
 
-    public String getEmp_email()
+    public String getEmail()
     {
-        return emp_email;
+        return email;
     }
 
     @Override
     public int hashCode()
     {
-        return emp_id;
+        return id;
     }
 
     @Override
     public boolean equals(Object obj)
     {
         Employee emp = (Employee) obj;
-        if (emp.emp_id == this.emp_id)
+        if (emp.id == this.id)
             return true;
         return false;
 
@@ -108,7 +108,7 @@ public class Employee
 
     public void addBreakupYearMonth(Map<String, Integer> breakup, int year, int month)
     {
-        pay_slip.put(new YearMonth(year, month), ImmutableMap.<String, Integer> builder().putAll(breakup).build());
+        paySlip.put(new YearMonth(year, month), ImmutableMap.<String, Integer> builder().putAll(breakup).build());
     }
     
     public Map<String, Integer> getPaySlipFromTable(YearMonth ym)
@@ -116,8 +116,8 @@ public class Employee
         return table.row(ym);
     }
     
-    public void addBreakupYearMonthInTable(Table<YearMonth, String, Integer> sal_breakup)
+    public void addBreakupYearMonthInTable(Table<YearMonth, String, Integer> salBreakup)
     {
-        table.putAll(sal_breakup);
+        table.putAll(salBreakup);
     }
 }

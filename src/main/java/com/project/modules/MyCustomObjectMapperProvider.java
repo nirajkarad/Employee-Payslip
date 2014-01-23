@@ -29,12 +29,11 @@
  */
 package com.project.modules;
 
-import com.google.common.collect.Table;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.google.common.collect.Table;
 import com.google.inject.Provider;
 import org.joda.time.YearMonth;
 
@@ -47,7 +46,7 @@ public class MyCustomObjectMapperProvider implements Provider<ObjectMapper>
         ObjectMapper mapper = new ObjectMapper();
         SimpleModule sm = new SimpleModule();
         sm.addDeserializer(Table.class, new GuavaTableDeserializer());
-        mapper.registerModules(new GuavaModule() , sm,
+        mapper.registerModules(new GuavaModule() , sm, 
         new JodaModule().addKeyDeserializer(YearMonth.class, new YearMonthKeyDeserializer()));
         return mapper;
     }
