@@ -29,7 +29,10 @@
  */
 package com.project.resource;
 
+import javax.ws.rs.QueryParam;
+
 import com.google.common.base.Strings;
+import com.google.common.collect.Table;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.project.employee.Employee;
@@ -112,7 +115,6 @@ public class Finance
     public Response addEmployee(final @PathParam("id") int org_id, Employee emp)
     {
         checkAddEmployeeDetails(org_id, emp);
-
         Organization org = org_store.getDetail(org_id);
 
         if (org != null) {
@@ -159,6 +161,39 @@ public class Finance
         else
             throw new WebApplicationException(Response.status(Status.CONFLICT).entity("Organization with Id-" + org_id + " does not exist").build());
     }
+    
+    private void checkAddPaySlipTable(int org_id, int emp_id, Table<YearMonth, String, Integer> breakup)
+    {
+        if (org_id <= 0)
+            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Organization Id " + org_id).build());
+        else if (emp_id <= 0)
+            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Employee Id " + emp_id).build());
+        else if (breakup == null)
+            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid salary breakup details").build());
+    }
+    
+    @PUT
+    @Path("/{o_id}/{e_id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addPayslipUsingTable(final @PathParam("o_id") int org_id, 
+        final @PathParam("e_id") int emp_id, 
+        Table<YearMonth, String, Integer> breakup)
+    {       
+        checkAddPaySlipTable(org_id, emp_id, breakup);
+        
+        Organization o = org_store.getDetail(org_id);
+        if (o != null) {
+            Employee emp = o.getEmp(emp_id);
+            if (emp != null) {
+                emp.addBreakupYearMonthInTable(breakup);
+                return Response.status(Status.CREATED).entity("Table : Payslip added for employee-" + emp_id + " of organization id-" + org_id).build();
+            }
+            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Table : Employee Id-" + emp_id + " does not exists in the organization " + org_id).build());
+        }
+        else
+            throw new WebApplicationException(Response.status(Status.CONFLICT).entity("Table : Organization with Id-" + org_id + " does not exist").build());
+    }
+    
 
     private void checkValidOrgId(int org_id)
     {
@@ -198,5 +233,15 @@ public class Finance
         Map<YearMonth, Map<String, Integer>> map = emp.getPay_slip();
         return map.get(new YearMonth(year, month));
     }
-
+    
+    @GET
+    @Path("/{o_id}/{e_id}/salary")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Map<String, Integer> showEmployeePayslipDetailsFromTable(
+        final @PathParam("o_id") int org_id, final @PathParam("e_id") int emp_id, @QueryParam("yearmonth") String ym)
+    {
+        Organization org = org_store.getDetail(org_id);
+        Employee emp = org.getEmp(emp_id);
+        return emp.getPaySlipFromTable(YearMonth.parse(ym));
+    }
 }

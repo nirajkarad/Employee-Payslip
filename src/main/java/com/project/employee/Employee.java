@@ -31,8 +31,10 @@ package com.project.employee;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Table;
 import java.util.Map;
 import org.joda.time.YearMonth;
 
@@ -44,6 +46,8 @@ public class Employee
     private String emp_email;
 
     private Map<YearMonth, Map<String, Integer>> pay_slip;
+    
+    private Table<YearMonth, String, Integer> table;
 
     @JsonCreator
     public Employee(@JsonProperty("emp_id") int id, @JsonProperty("emp_fname") String fname, @JsonProperty("emp_lname") String lname, @JsonProperty("emp_email") String email)
@@ -53,6 +57,8 @@ public class Employee
         this.emp_lname = lname;
         this.emp_email = email;
         this.pay_slip = Maps.newConcurrentMap();
+        
+        this.table = HashBasedTable.create();
     }
 
     public Map<YearMonth, Map<String, Integer>> getPay_slip()
@@ -104,5 +110,15 @@ public class Employee
     public void addBreakupYearMonth(Map<String, Integer> breakup, int year, int month)
     {
         pay_slip.put(new YearMonth(year, month), ImmutableMap.<String, Integer> builder().putAll(breakup).build());
+    }
+    
+    public Map<String, Integer> getPaySlipFromTable(YearMonth ym)
+    {
+        return table.row(ym);
+    }
+    
+    public void addBreakupYearMonthInTable(Table<YearMonth, String, Integer> sal_breakup)
+    {
+        table.putAll(sal_breakup);
     }
 }

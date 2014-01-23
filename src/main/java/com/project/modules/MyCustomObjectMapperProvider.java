@@ -29,6 +29,10 @@
  */
 package com.project.modules;
 
+import com.google.common.collect.Table;
+
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.google.inject.Provider;
@@ -41,7 +45,10 @@ public class MyCustomObjectMapperProvider implements Provider<ObjectMapper>
     public ObjectMapper get()
     {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModules(new JodaModule().addKeyDeserializer(YearMonth.class, new YearMonthKeyDeserializer()));
+        SimpleModule sm = new SimpleModule();
+        sm.addDeserializer(Table.class, new GuavaTableDeserializer());
+        mapper.registerModules(new GuavaModule() , sm,
+        new JodaModule().addKeyDeserializer(YearMonth.class, new YearMonthKeyDeserializer()));
         return mapper;
     }
 }
