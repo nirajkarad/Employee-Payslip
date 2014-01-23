@@ -77,7 +77,7 @@ public class Finance
     private void checkAddOrgDetails(Organization org)
     {
         if (org.getOrg_id() <= 0)
-            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Organization id " + org.getOrg_id()).build());
+            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Organization id :" + org.getOrg_id()).build());
         else if (Strings.isNullOrEmpty(org.getOrg_name()) || org.getOrg_name().trim().isEmpty())
             throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Organization Name : " + org.getOrg_name()).build());
 
@@ -89,24 +89,24 @@ public class Finance
     {
         checkAddOrgDetails(org);
         if (org_store.getDetail(org.getOrg_id()) != null) {
-            throw new WebApplicationException(Response.status(Status.CONFLICT).entity("Organization already exists").build());
+            throw new WebApplicationException(Response.status(Status.CONFLICT).entity("Organization already exists...").build());
         }
         org_store.putDetail(org.getOrg_id(), org);
-        return Response.status(Status.CREATED).entity(org.getOrg_name() + " Organization created with id - " + org.getOrg_id()).build();
+        return Response.status(Status.CREATED).entity(org.getOrg_name() + " Organization created with id : " + org.getOrg_id()).build();
     }
 
     private void checkAddEmployeeDetails(int org_id, Employee emp)
     {
         if (org_id <= 0)
-            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Organization Id " + org_id).build());
+            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Organization Id : " + org_id).build());
         else if (emp.getEmp_id() <= 0)
-            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Employee Id " + emp.getEmp_id()).build());
+            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Employee : Id " + emp.getEmp_id()).build());
         else if (Strings.isNullOrEmpty(emp.getEmp_fname()) || emp.getEmp_fname().trim().isEmpty())
-            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Employee first name " + emp.getEmp_fname()).build());
+            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Employee first name : " + emp.getEmp_fname()).build());
         else if (Strings.isNullOrEmpty(emp.getEmp_lname()) || emp.getEmp_lname().trim().isEmpty())
-            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Employee last name  " + emp.getEmp_lname()).build());
+            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Employee last name : " + emp.getEmp_lname()).build());
         else if (Strings.isNullOrEmpty(emp.getEmp_email()) || emp.getEmp_email().trim().isEmpty())
-            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Employee email-id " + emp.getEmp_email()).build());
+            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Employee email-id : " + emp.getEmp_email()).build());
     }
 
     @POST
@@ -123,24 +123,24 @@ public class Finance
             }
             org.addEmployeeToOrganization(emp);
             org_store.putDetail(org_id, org);
-            return Response.status(Status.CREATED).entity("Employee with Id " + emp.getEmp_id() + " created successfully.").build();
+            return Response.status(Status.CREATED).entity("Employee with Id : " + emp.getEmp_id() + " created successfully.").build();
         }
         else
-            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Organization with id " + org_id + " not found.").build());
+            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Organization with id : " + org_id + " not found.").build());
     }
 
     private void checkAddPaySlip(int org_id, int emp_id, Map<String, Integer> breakup, int year, int month)
     {
         if (org_id <= 0)
-            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Organization Id " + org_id).build());
+            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Organization Id : " + org_id).build());
         else if (emp_id <= 0)
-            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Employee Id " + emp_id).build());
+            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Employee Id : " + emp_id).build());
         else if (breakup == null)
-            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid salary breakup details").build());
+            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid salary breakup details : ").build());
         else if (year < 2000 || year > Calendar.getInstance().get(Calendar.YEAR))
-            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid year " + year).build());
+            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid year : " + year).build());
         else if (month <= 0 || month > 12)
-            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid month " + year).build());
+            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid month : " + year).build());
     }
 
     @PUT
@@ -154,20 +154,20 @@ public class Finance
             Employee emp = o.getEmp(emp_id);
             if (emp != null) {
                 emp.addBreakupYearMonth(breakup, year, month);
-                return Response.status(Status.CREATED).entity("Payslip added for employee-" + emp_id + " of organization id-" + org_id).build();
+                return Response.status(Status.CREATED).entity("Payslip added for employee : " + emp_id + " of organization id : " + org_id).build();
             }
-            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Employee Id-" + emp_id + " does not exists in the organization " + org_id).build());
+            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Employee Id : " + emp_id + " does not exists in the organization " + org_id).build());
         }
         else
-            throw new WebApplicationException(Response.status(Status.CONFLICT).entity("Organization with Id-" + org_id + " does not exist").build());
+            throw new WebApplicationException(Response.status(Status.CONFLICT).entity("Organization with Id : " + org_id + " does not exist").build());
     }
     
     private void checkAddPaySlipTable(int org_id, int emp_id, Table<YearMonth, String, Integer> breakup)
     {
         if (org_id <= 0)
-            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Organization Id " + org_id).build());
+            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Organization Id : " + org_id).build());
         else if (emp_id <= 0)
-            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Employee Id " + emp_id).build());
+            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Employee Id : " + emp_id).build());
         else if (breakup == null)
             throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid salary breakup details").build());
     }
@@ -186,12 +186,12 @@ public class Finance
             Employee emp = o.getEmp(emp_id);
             if (emp != null) {
                 emp.addBreakupYearMonthInTable(breakup);
-                return Response.status(Status.CREATED).entity("Table : Payslip added for employee-" + emp_id + " of organization id-" + org_id).build();
+                return Response.status(Status.CREATED).entity("Table : Payslip added for employee : " + emp_id + " of organization id-" + org_id).build();
             }
-            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Table : Employee Id-" + emp_id + " does not exists in the organization " + org_id).build());
+            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Table : Employee Id : " + emp_id + " does not exists in the organization " + org_id).build());
         }
         else
-            throw new WebApplicationException(Response.status(Status.CONFLICT).entity("Table : Organization with Id-" + org_id + " does not exist").build());
+            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Table : Organization with Id : " + org_id + " does not exist").build());
     }
     
 
@@ -210,16 +210,34 @@ public class Finance
         Organization o = org_store.getDetail(org_id);
         if (o != null)
             return o.getEmp_collection();
-        return null;
+        else
+            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Organization with id " + org_id + " not found.").build());
     }
-
+    
+    private void checkshowEmployeeDetails(int org_id, int emp_id)
+    {
+        if (org_id <= 0)
+            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Organization Id " + org_id).build());
+        else if (emp_id <= 0)
+            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Invalid Employee Id " + emp_id).build());
+    }
+    
     @GET
     @Path("/{o_id}/{e_id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Employee showEmployeeDetails(final @PathParam("o_id") int org_id, final @PathParam("e_id") int emp_id)
     {
+        checkshowEmployeeDetails(org_id, emp_id);
         Organization org = org_store.getDetail(org_id);
-        return org.getEmp(emp_id);
+        if(org!=null)
+        {
+            if(org.getEmp(emp_id)!= null)
+                return org.getEmp(emp_id);
+            else
+                throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Employee : "+emp_id+" Not Found").build());                
+        }
+        else
+            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Organization with id : " + org_id + " not found.").build());
     }
 
     @GET
@@ -231,7 +249,10 @@ public class Finance
         Employee emp = org.getEmp(emp_id);
 
         Map<YearMonth, Map<String, Integer>> map = emp.getPay_slip();
-        return map.get(new YearMonth(year, month));
+        if(map == null)
+            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Payslip Does not exists for Employee : "+emp_id).build());
+        else
+            return map.get(new YearMonth(year, month));
     }
     
     @GET
@@ -241,7 +262,21 @@ public class Finance
         final @PathParam("o_id") int org_id, final @PathParam("e_id") int emp_id, @QueryParam("yearmonth") String ym)
     {
         Organization org = org_store.getDetail(org_id);
-        Employee emp = org.getEmp(emp_id);
-        return emp.getPaySlipFromTable(YearMonth.parse(ym));
+        if(org!=null)
+        {
+            Employee emp = org.getEmp(emp_id);
+            if(emp!=null)
+                {
+                    Map<String , Integer> map = emp.getPaySlipFromTable(YearMonth.parse(ym));
+                    if(map!=null)
+                        return map;
+                    else
+                        throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Payslip Does not exists for Employee : "+emp_id).build()); 
+                }
+            else
+                throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Employee : "+emp_id+" Not Found").build());
+        }
+        else
+            throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Organization with id : " + org_id + " not found.").build());    
     }
 }

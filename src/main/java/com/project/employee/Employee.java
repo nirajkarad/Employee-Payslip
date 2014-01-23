@@ -57,7 +57,6 @@ public class Employee
         this.emp_lname = lname;
         this.emp_email = email;
         this.pay_slip = Maps.newConcurrentMap();
-        
         this.table = HashBasedTable.create();
     }
 
