@@ -29,10 +29,18 @@
  */
 package com.project.modules;
 
+import com.project.resource.EmployeeResource;
+
+import com.project.persist.map.MapOrgStorageImpl;
+import com.project.persist.EmployeePersistance;
+import com.project.config.ConfigProvider;
+import com.project.config.DBConfig;
+import com.project.json.MyCustomObjectMapperProvider;
+import com.project.json.JacksonJsonProviderWrapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.project.persist.Storage;
-import com.project.persist.map.MapOrgStorageImpl;
+import com.project.persist.db.DatabaseStorageImpl;
 import com.project.resource.Finance;
 import com.sun.jersey.guice.JerseyServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
@@ -44,8 +52,10 @@ public class MyModule extends JerseyServletModule
     protected void configureServlets()
     {
         bind(Finance.class);
+        bind(EmployeeResource.class);
         bind(Storage.class).to(MapOrgStorageImpl.class).asEagerSingleton();
-
+        bind(DBConfig.class).toProvider(ConfigProvider.class).asEagerSingleton();
+        bind(EmployeePersistance.class).to(DatabaseStorageImpl.class).asEagerSingleton();
         // Configure Jackson for generating JSON
         bind(JacksonJsonProvider.class).toProvider(JacksonJsonProviderWrapper.class).asEagerSingleton();
 

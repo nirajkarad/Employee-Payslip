@@ -30,6 +30,7 @@
 package com.project.employee;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableMap;
@@ -45,10 +46,12 @@ public class Employee
     private String lastName;
     private String email;
 
+    @JsonProperty
+    private Table<YearMonth, String, Integer> table;
+    
+    @JsonIgnore
     private Map<YearMonth, Map<String, Integer>> paySlip;
     
-    private Table<YearMonth, String, Integer> table;
-
     @JsonCreator
     public Employee(@JsonProperty("id") int id, @JsonProperty("firstName") String firstName, @JsonProperty("lastName") String lastName, @JsonProperty("email") String email)
     {
@@ -60,7 +63,7 @@ public class Employee
         this.table = HashBasedTable.create();
     }
 
-    public Map<YearMonth, Map<String, Integer>> getPay_slip()
+    public Map<YearMonth, Map<String, Integer>> getPaySlip()
     {
         return paySlip;
     }

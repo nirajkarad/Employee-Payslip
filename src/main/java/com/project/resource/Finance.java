@@ -147,7 +147,9 @@ public class Finance
             throw new WebApplicationException(Response.status(Status.CONFLICT).entity("Employee already exists..").build());
         }
         org.addEmployeeToOrganization(employee);
+
         orgStore.putDetail(orgId, org);
+
         return Response.status(Status.CREATED).entity("Employee with Id : " + employee.getId() + " created successfully.").build();
     }
 
@@ -230,7 +232,7 @@ public class Finance
     {
         checkPaySlipDetails(orgId, empId, year, month);
         Employee emp = getEmployee(orgId, empId);
-        Map<YearMonth, Map<String, Integer>> paySlip = emp.getPay_slip();
+        Map<YearMonth, Map<String, Integer>> paySlip = emp.getPaySlip();
         if (paySlip == null)
             throw new WebApplicationException(Response.status(Status.NOT_FOUND).entity("Payslip Does not exists for (Year/Month) : (" + year + "/" + month + ")").build());
         else

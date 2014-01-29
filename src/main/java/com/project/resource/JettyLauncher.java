@@ -30,16 +30,16 @@
 package com.project.resource;
 
 
+import com.google.inject.servlet.GuiceFilter;
 import com.project.modules.EmployeeServletListener;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
-import com.google.inject.servlet.GuiceFilter;
-
 public class JettyLauncher {
 
     public static void main(String[] args) throws Exception {
+        
          // Create the server.
           Server server = new Server(8081);
            

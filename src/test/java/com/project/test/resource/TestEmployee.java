@@ -29,14 +29,24 @@
  */
 package com.project.test.resource;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.dataformat.smile.SmileFactory;
+import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Table;
 import com.project.employee.Employee;
-import com.project.modules.YearMonthKeyDeserializer;
+import com.project.json.GuavaTableDeserializer;
+import com.project.json.GuavaTableSerializer;
+import com.project.json.SmileConversion;
+import com.project.json.YearMonthKeyDeserializer;
 import java.io.IOException;
+import java.sql.Blob;
+import java.sql.SQLException;
 import java.util.Map;
+import javax.sql.rowset.serial.SerialException;
 import org.joda.time.YearMonth;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -83,23 +93,33 @@ public class TestEmployee
         Assert.assertNotEquals(emp2, emp3);
     }
 
-    @Test
+/*    @Test
     public void testEmployeeSerialization() throws JsonProcessingException
     {
         ObjectMapper mapper = new ObjectMapper();
-        Assert.assertEquals(mapper.writeValueAsString(new Employee(1, "fname", "lname", "email")), "{\"id\":1,\"firstName\":\"fname\",\"lastName\":\"lname\",\"email\":\"email\",\"pay_slip\":{}}");
+        Assert.assertEquals(mapper.writeValueAsString(new Employee(1, "fname", "lname", "email")), "{\"id\":1,\"firstName\":\"fname\",\"lastName\":\"lname\",\"email\":\"email\"}");
     }
-
+*/
     @Test
-    public void testEmployeeDeserialization() throws IOException
+    public void testEmployeeDeserialization() throws IOException, SerialException, SQLException, ClassNotFoundException
     {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JodaModule().addKeyDeserializer(YearMonth.class, new YearMonthKeyDeserializer()));
-        Employee employee = mapper.readValue("{\"id\":1,\"firstName\":\"fname\",\"lastName\":\"lname\",\"email\":\"email\"}", Employee.class);
-        Assert.assertNotNull(employee);
-        Assert.assertEquals(1, employee.getId());
-        Assert.assertEquals("fname", employee.getFirstName());
-        Assert.assertEquals("lname", employee.getLastName());   
-        Assert.assertEquals("email", employee.getEmail());
+        ObjectMapper objectMapper = new ObjectMapper(new SmileFactory());
+        SimpleModule sm = new SimpleModule();
+        sm.addSerializer(Table.class, new GuavaTableSerializer());
+        sm.addDeserializer(Table.class, new GuavaTableDeserializer());
+        objectMapper.registerModules(new GuavaModule() , sm, 
+        new JodaModule().addKeyDeserializer(YearMonth.class, new YearMonthKeyDeserializer()));
+        Employee emp = new Employee(1, "fname", "lname", "email");
+        
+        Table<YearMonth, String, Integer> table = HashBasedTable.create();
+        YearMonth ym = new YearMonth();
+        table.put(ym, "HRA", 4000);
+        table.put(ym, "Conveyence", 2000);
+        table.put(ym, "Special Allowance", 8000);
+        
+        emp.addBreakupYearMonthInTable(table);
+        Blob b = SmileConversion.smileCompressionSerialize(emp);
+        
+        SmileConversion.smileDecompressionDeSerializeS(b);
     }
 }
