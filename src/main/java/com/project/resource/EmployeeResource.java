@@ -34,8 +34,8 @@ import com.google.common.collect.Table;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.project.employee.Employee;
-import com.project.persist.EmployeePersistance;
-import com.project.persist.StorageException;
+import com.project.persist.PersistanceAPI;
+import com.project.persist.PersistanceException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.Consumes;
@@ -54,40 +54,28 @@ import org.joda.time.YearMonth;
 @Singleton
 public class EmployeeResource
 {
-
-    private EmployeePersistance empStore;
-
+    
+    private final PersistanceAPI empStore;
+    
     @Inject
-    public EmployeeResource(EmployeePersistance str)
+    public EmployeeResource(PersistanceAPI api)
     {
-        this.empStore = str;
+        this.empStore = api;
     }
 
-    /*
-     * @GET
-     * 
-     * @Produces(MediaType.APPLICATION_JSON) public String employeeTestFinanace() { return "Welcome.."; }
-     */
-
+    public void provideReuired(int inMem, int database)
+    {
+        
+    }
+    
+    
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response /*List<Employee>*/ employeeTestFinanace()
+    public String displayTest()
     {
-        List<Employee> lst;
-        try {
-            lst = empStore.findAllEmployees();
-
-            if (lst == null)
-                throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Got List Null").build());
-            else
-                //return lst;
-                return Response.status(Status.CREATED).entity("Fetched : " + lst.size() + " successfully.").build();
-        }
-        catch (StorageException e) {
-            throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Storage Exception").build());
-        }
+        return "Welcome to revised edition";    
     }
-   
+
     @GET
     @Path("/all/{show}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -124,7 +112,7 @@ public class EmployeeResource
         try {
             empStore.putDetail(employee.getId(), employee);
         }
-        catch (StorageException e) {
+        catch (PersistanceException e) {
             throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Error is storing employee : " + employee.getId()).build());
         }
         return Response.status(Status.CREATED).entity("Employee with Id : " + employee.getId() + " created successfully.").build();
@@ -152,7 +140,7 @@ public class EmployeeResource
             try {
                 empStore.putDetail(emp.getId(), emp);
             }
-            catch (StorageException e) {
+            catch (PersistanceException e) {
                 throw new WebApplicationException(Response.status(Status.INTERNAL_SERVER_ERROR).entity("Error is storing employee : " + empId + " while adding payslip").build());
             }
             return Response.status(Status.CREATED).entity("Table : Payslip added for employee : " + empId).build();

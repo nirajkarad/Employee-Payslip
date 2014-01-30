@@ -39,27 +39,26 @@ import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.Mapper;
 
-public interface FinanceDAO
+public interface EmployeeDAO
 {    
-    @SqlUpdate("create table employee (id int primary key,value blob)")
+    @SqlUpdate("create table emp (id int primary key,value blob)")
     void createEmployee();
     
-    @SqlQuery("select count(*) from employee")
+    @SqlQuery("select count(*) from emp")
     int checkEmployeeCount();
 
-    @SqlUpdate("insert into employee (id, value) values (:id, :value)")
+    @SqlUpdate("insert into emp (id, value) values (:id, :value)")
     int insertEmployee(@Bind("id") int id, @Bind("value") Blob value);
     
-    @SqlUpdate("update employee set value=:value where id = :id")
+    @SqlUpdate("update emp set value=:value where id = :id")
     int updateEmployee(@Bind("id") int id, @Bind("value") Blob value);
     
     @Mapper(EmployeeMapper.class)
-    @SqlQuery("select value from employee where id = :id")
+    @SqlQuery("select value from emp where id = :id")
     Employee findEmployeeById(@Bind("id") int id);
     
-    @SqlQuery("select * from employee")
+    @SqlQuery("select * from emp")
     @Mapper(EmployeeMapper.class)
     @FetchSize(1000)
     ResultIterator<Employee> findAll();
-    
 }

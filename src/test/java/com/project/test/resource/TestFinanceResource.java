@@ -38,7 +38,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Table;
 import com.project.employee.Employee;
 import com.project.organization.Organization;
-import com.project.persist.Storage;
+import com.project.persist.OrganizationPersistance;
 import com.project.resource.Finance;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,13 +54,13 @@ import org.testng.annotations.Test;
 public class TestFinanceResource
 {
 
-    private Storage str;
+    private OrganizationPersistance str;
     private Finance fin;
 
     @BeforeClass
     public void setup()
     {
-        str = createNiceMock(Storage.class);
+        str = createNiceMock(OrganizationPersistance.class);
         fin = new Finance(str);
     }
 

@@ -35,7 +35,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.project.employee.Employee;
 import com.project.organization.Organization;
-import com.project.persist.Storage;
+import com.project.persist.OrganizationPersistance;
 import java.util.Calendar;
 import java.util.Map;
 import java.util.Set;
@@ -59,10 +59,10 @@ import org.joda.time.format.DateTimeFormat;
 public class Finance
 {
 
-    private Storage orgStore;
+    private OrganizationPersistance orgStore;
 
     @Inject
-    public Finance(Storage str)
+    public Finance(OrganizationPersistance str)
     {
         this.orgStore = str;
     }

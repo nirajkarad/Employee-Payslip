@@ -29,13 +29,12 @@
  */
 package com.project.persist;
 
-import com.project.organization.Organization;
-
-public interface Storage
+@SuppressWarnings("serial")
+public class PersistanceException extends Exception
 {
 
-    void putDetail(int id , Organization o);
-    
-    Organization getDetail(int id);
-    
+    public PersistanceException(Throwable e)
+    {
+        super(e);
+    }
 }

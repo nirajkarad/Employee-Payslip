@@ -30,38 +30,28 @@
 package com.project.persist.db;
 
 import com.google.inject.Inject;
-import com.project.config.DBConfig;
+
 import com.project.employee.Employee;
 import com.project.json.SmileConversion;
 import com.project.persist.EmployeePersistance;
-import com.project.persist.StorageException;
-import com.project.persist.db.jdbi.FinanceDAO;
+import com.project.persist.PersistanceException;
+import com.project.persist.db.jdbi.EmployeeDAO;
 import java.util.ArrayList;
 import java.util.List;
-import org.skife.jdbi.v2.DBI;
 import org.skife.jdbi.v2.ResultIterator;
 
-public class DatabaseStorageImpl implements EmployeePersistance
+public class EmployeeDatabaseStorageImpl implements EmployeePersistance
 {
-    private final DBConfig db;
-    private FinanceDAO dao;
-
+    private EmployeeDAO dao;
+    
     @Inject
-    public DatabaseStorageImpl(DBConfig config)
+    public EmployeeDatabaseStorageImpl(EmployeeDAO dao)
     {
-        this.db = config;
-        DBI dbAccess = new DBI(db.getUrl(), db.getUser(), db.getPass());
-        this.dao = dbAccess.open(FinanceDAO.class);
-        try {
-            dao.checkEmployeeCount();
-        }
-        catch (Exception e) {
-            dao.createEmployee();
-        }
+        this.dao = dao;
     }
 
     @Override
-    public void putDetail(int id, Employee employee) throws StorageException
+    public void putDetail(int id, Employee employee) throws PersistanceException
     {
         try {
             if (getDetail(id) == null) {
@@ -73,7 +63,7 @@ public class DatabaseStorageImpl implements EmployeePersistance
         }
         catch (Exception e) {
             e.printStackTrace();
-            throw new StorageException(e);
+            throw new PersistanceException(e);
         }
 
     }
@@ -85,7 +75,7 @@ public class DatabaseStorageImpl implements EmployeePersistance
     }
 
     @Override
-    public List<Employee> findAllEmployees() throws StorageException
+    public List<Employee> findAllEmployees() throws PersistanceException
     {
         List<Employee> lst = new ArrayList<Employee>();
         ResultIterator<Employee> rs = dao.findAll();
@@ -100,10 +90,16 @@ public class DatabaseStorageImpl implements EmployeePersistance
                     lst.add(emp);
                 }
                 catch (Exception e) {
-                    throw new StorageException(e);
+                    throw new PersistanceException(e);
                 }
             }// end while
             return lst;
         }
+    }
+
+    @Override
+    public int getType()
+    {
+        return EmployeePersistance.DATABASE;
     }
 }

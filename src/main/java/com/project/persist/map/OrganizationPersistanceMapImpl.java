@@ -1,4 +1,4 @@
- /*
+/*
 
  * Copyright 2010-2013 Ning, Inc.
 
@@ -27,22 +27,27 @@
  * under the License.
 
  */
-package com.project.persist;
+package com.project.persist.map;
 
-import com.project.employee.Employee;
-import java.util.List;
+import com.project.organization.Organization;
 
-public interface EmployeePersistance
+import com.project.persist.OrganizationPersistance;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class OrganizationPersistanceMapImpl implements OrganizationPersistance
 {
-    public static final int NONE = 0;
-    public static final int IN_MEMORY = 1;
-    public static final int DATABASE = 2;
-    
-    void putDetail(int id , Employee employee) throws PersistanceException;
-    
-    Employee getDetail(int id);
-    
-    List<Employee> findAllEmployees() throws PersistanceException;
-    
-    int getType();
+
+    Map<Integer, Organization> map = new ConcurrentHashMap<Integer, Organization>();
+
+    public void putDetail(int id, Organization o)
+    {
+        map.put(id, o);
+    }
+
+    public Organization getDetail(int id)
+    {
+        return map.get(id);
+    }
+
 }

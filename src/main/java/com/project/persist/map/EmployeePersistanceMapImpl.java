@@ -1,4 +1,4 @@
-/*
+ /*
 
  * Copyright 2010-2013 Ning, Inc.
 
@@ -29,25 +29,40 @@
  */
 package com.project.persist.map;
 
-import com.project.organization.Organization;
-
-import com.project.persist.Storage;
+import com.project.employee.Employee;
+import com.project.persist.EmployeePersistance;
+import com.project.persist.PersistanceException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class MapOrgStorageImpl implements Storage
+public class EmployeePersistanceMapImpl implements EmployeePersistance
 {
 
-    Map<Integer, Organization> map = new ConcurrentHashMap<Integer, Organization>();
-
-    public void putDetail(int id, Organization o)
+    Map<Integer, Employee> map = new ConcurrentHashMap<Integer, Employee>();
+    @Override
+    public void putDetail(int id, Employee employee) throws PersistanceException
     {
-        map.put(id, o);
+        map.put(id, employee);
+        
     }
 
-    public Organization getDetail(int id)
+    @Override
+    public Employee getDetail(int id)
     {
         return map.get(id);
+    }
+
+    @Override
+    public List<Employee> findAllEmployees() throws PersistanceException
+    {
+        return null;
+    }
+
+    @Override
+    public int getType()
+    {
+        return EmployeePersistance.IN_MEMORY;
     }
 
 }
