@@ -79,11 +79,10 @@ public class EmployeeDatabaseStorageImpl implements EmployeePersistance
     {
         List<Employee> lst = new ArrayList<Employee>();
         ResultIterator<Employee> rs = dao.findAll();
-
+        
         if (rs == null)
             return null;
         else {
-
             while (rs.hasNext()) {
                 try {
                     Employee emp = rs.next();
@@ -101,5 +100,11 @@ public class EmployeeDatabaseStorageImpl implements EmployeePersistance
     public int getType()
     {
         return EmployeePersistance.DATABASE;
+    }
+
+    @Override
+    public boolean addBinding()
+    {
+        return EmployeePersistance.FALSE;
     }
 }

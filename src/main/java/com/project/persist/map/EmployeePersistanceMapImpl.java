@@ -65,4 +65,10 @@ public class EmployeePersistanceMapImpl implements EmployeePersistance
         return EmployeePersistance.IN_MEMORY;
     }
 
+    @Override
+    public boolean addBinding()
+    {
+        return EmployeePersistance.TRUE;
+    }
+
 }

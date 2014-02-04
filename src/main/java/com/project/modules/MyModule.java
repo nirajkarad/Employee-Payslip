@@ -29,21 +29,18 @@
  */
 package com.project.modules;
 
-import com.project.persist.PersistanceAPI;
-
-import com.google.inject.multibindings.Multibinder;
-import com.project.persist.map.EmployeePersistanceMapImpl;
-import com.project.config.EmployeeDAOProvider;
-import com.project.persist.db.jdbi.EmployeeDAO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
+import com.google.inject.multibindings.Multibinder;
 import com.project.config.ConfigProvider;
 import com.project.config.DBConfig;
+import com.project.config.EmployeeDAOProvider;
 import com.project.json.JacksonJsonProviderWrapper;
 import com.project.json.MyCustomObjectMapperProvider;
 import com.project.persist.EmployeePersistance;
 import com.project.persist.OrganizationPersistance;
-import com.project.persist.db.EmployeeDatabaseStorageImpl;
+import com.project.persist.PersistanceAPI;
+import com.project.persist.db.jdbi.EmployeeDAO;
 import com.project.persist.map.OrganizationPersistanceMapImpl;
 import com.project.resource.EmployeeResource;
 import com.project.resource.Finance;
@@ -51,6 +48,7 @@ import com.sun.jersey.guice.JerseyServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class MyModule extends JerseyServletModule
 {
@@ -58,6 +56,8 @@ public class MyModule extends JerseyServletModule
     private static final String JERSEY_API_JSON_POJO_MAPPING_FEATURE = "com.sun.jersey.api.json.POJOMappingFeature";
     private static final String JERSEY_CONFIG_PROPERTY_PACKAGES = "com.sun.jersey.config.property.packages";
     private static final String EMPLOYEE_RESOURCES_PACKAGE = "com.project.resource.EmployeeResource";
+    
+    Set<Class<? extends EmployeePersistance>> customSet;
 
     @Override
     protected void configureServlets()
@@ -65,16 +65,16 @@ public class MyModule extends JerseyServletModule
         bind(Finance.class);
         bind(EmployeeResource.class);
         bind(PersistanceAPI.class);
-
+        
         bind(OrganizationPersistance.class).to(OrganizationPersistanceMapImpl.class).asEagerSingleton();
-
+        
         bind(DBConfig.class).toProvider(ConfigProvider.class).asEagerSingleton();
         bind(EmployeeDAO.class).toProvider(EmployeeDAOProvider.class).asEagerSingleton();
-
+        
         Multibinder<EmployeePersistance> binder = Multibinder.newSetBinder(binder(), EmployeePersistance.class);
-        binder.addBinding().to(EmployeePersistanceMapImpl.class);
-        binder.addBinding().to(EmployeeDatabaseStorageImpl.class);
-
+            for (final Class<? extends EmployeePersistance> implementsClass : customSet) {
+                binder.addBinding().to(implementsClass);
+        }
         // Configure Jackson for generating JSON
         bind(JacksonJsonProvider.class).toProvider(JacksonJsonProviderWrapper.class).asEagerSingleton();
 
@@ -87,5 +87,10 @@ public class MyModule extends JerseyServletModule
         params.put(JERSEY_API_JSON_POJO_MAPPING_FEATURE, "true");
 
         serve("/*").with(GuiceContainer.class, params);
+    }
+
+    public void addConfigToMultipleBinding(Set<Class<? extends EmployeePersistance>> addSet)
+    {
+        this.customSet = addSet;
     }
 }

@@ -38,6 +38,9 @@ public interface EmployeePersistance
     public static final int IN_MEMORY = 1;
     public static final int DATABASE = 2;
     
+    public static final boolean TRUE = true;
+    public static final boolean FALSE = false;
+    
     void putDetail(int id , Employee employee) throws PersistanceException;
     
     Employee getDetail(int id);
@@ -45,4 +48,7 @@ public interface EmployeePersistance
     List<Employee> findAllEmployees() throws PersistanceException;
     
     int getType();
+    
+    public boolean addBinding();
+   
 }

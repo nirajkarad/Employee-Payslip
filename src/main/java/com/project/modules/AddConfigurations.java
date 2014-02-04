@@ -29,24 +29,30 @@
  */
 package com.project.modules;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.servlet.GuiceServletContextListener;
 import com.project.persist.EmployeePersistance;
-import com.project.persist.map.EmployeePersistanceMapImpl;
+import java.util.HashSet;
 import java.util.Set;
 
-public class EmployeeServletListener extends GuiceServletContextListener {
-
-    @Override
-    protected Injector getInjector() {
-        //Default Map implementation
-        AddConfigurations conf = AddConfigurations.getInstance();
-        Set<Class<? extends EmployeePersistance>> addSet = conf.add(EmployeePersistanceMapImpl.class);
-        
-        MyModule mod = new MyModule();
-        mod.addConfigToMultipleBinding(addSet);
-        return Guice.createInjector(mod);
+public class AddConfigurations
+{
+    //Singleton Class
+    private static AddConfigurations instance = new AddConfigurations();
+    Set<Class<? extends EmployeePersistance>>  retVal = 
+    new HashSet<Class<? extends EmployeePersistance>>();
+    
+    private AddConfigurations()
+    {
     }
-}
+    
+    public static AddConfigurations getInstance()
+    {
+        return instance;
+    }
+    
+    public Set<Class<? extends EmployeePersistance>> add(Class<? extends EmployeePersistance> toBeIncluded)
+    {
+        retVal.add(toBeIncluded);
+        return retVal;
+    }
 
+}

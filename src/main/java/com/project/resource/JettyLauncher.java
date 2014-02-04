@@ -31,10 +31,15 @@ package com.project.resource;
 
 
 import com.google.inject.servlet.GuiceFilter;
+import com.project.modules.AddConfigurations;
 import com.project.modules.EmployeeServletListener;
+import com.project.persist.EmployeePersistance;
+import com.project.persist.db.EmployeeDatabaseStorageImpl;
+import java.util.Set;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.reflections.Reflections;
 
 public class JettyLauncher {
 
@@ -45,7 +50,20 @@ public class JettyLauncher {
           
           // Create a servlet context and add the jersey servlet.
           ServletContextHandler sch = new ServletContextHandler(server, "/");
-           
+          
+          //Look in Package
+          Reflections reflections = new Reflections("com");
+          
+          Set<Class<? extends EmployeePersistance>> subTypes =
+              reflections.getSubTypesOf(EmployeePersistance.class);
+          
+          for (Class<? extends EmployeePersistance> persistance : subTypes) {
+              //Todo : Use Reflection and get[persistance.addBinding Value])
+              // If its is true then add that to multiple binding
+          }
+          
+          AddConfigurations conf = AddConfigurations.getInstance();
+          conf.add(EmployeeDatabaseStorageImpl.class);
           // Add our Guice listener that includes our bindings
           sch.addEventListener(new EmployeeServletListener());
            
